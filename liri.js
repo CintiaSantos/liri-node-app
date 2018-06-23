@@ -27,7 +27,7 @@ switch (liriCmd) {
     spotifySong(liriArg);
     break;
   case 'movie-this':
-    chooseMovie();
+    chooseMovie(liriArg);
     break;
   case 'do-what-it-says':
     DoWhatItSays();
@@ -98,5 +98,25 @@ function chooseMovie(movie) {
       console.log("If you haven't watched 'Mr. Nobody,' then you should: http://www.imdb.com/title/tt0485947/");
       console.log("It's on Netflix!");
     }
+  });
+}
+
+function DoWhatItSays() {
+  fs.readFile("./random.txt", "utf8", function (err, data)  {
+    if (err) throw err;
+    const text = data.split(",");
+    liriCmd = text[0].trim();
+    liriChoice = text[1].trim();
+    switch (liriCmd) {
+      case 'my-tweets':
+        getTweets();
+        break;
+      case 'spotify-this-song':
+        spotifySong(liriChoice);
+        break;
+      case 'movie-this':
+        chooseMovie(liriChoice);
+        break;
+    };
   });
 }
