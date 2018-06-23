@@ -15,7 +15,7 @@ var liriCmd = commandArg[2];
 
 var liriArg = '';
 
-for (var i = 2; i < commandArg.length; i++) {
+for (var i = 3; i < commandArg.length; i++) {
   liriArg += commandArg[i] + ' ';
 };
 
@@ -24,7 +24,7 @@ switch (liriCmd) {
     getTweets();
     break;
   case 'spotify-this-song':
-    spotifySong();
+    spotifySong(liriArg);
     break;
   case 'movie-this':
     chooseMovie();
@@ -35,13 +35,6 @@ switch (liriCmd) {
 };
 
 function getTweets() {
-
-  // var client = new Twitter({
-  //   consumer_key: keys.twitterKeys.consumer_key,
-  //   consumer_secret: keys.twitterKeys.consumer_secret,
-  //   access_token_key: keys.twitterKeys.access_token_key,
-  //   access_token_secret: keys.twitterKeys.access_token_secret
-  // });
 
   var params = {
     screen_name: "@CintiaS48722268"
@@ -62,19 +55,17 @@ function spotifySong(song) {
     type: 'track',
     query: song
   }, function (error, data) {
+    
     if (!error) {
-      for (var i = 0; i < data.tracks.items.length; i++) {
-        var songData = data.tracks.items[i];
+      var songData = data.tracks.items[0];
+      console.log("Artist: " + songData.artists[0].name);
 
-        console.log("Artist: " + songData.artists[0].name);
+      console.log("Song: " + songData.name);
 
-        console.log("Song: " + songData.name);
+      console.log("Preview URL: " + songData.preview_url);
 
-        console.log("Preview URL: " + songData.preview_url);
-
-        console.log("Album: " + songData.album.name);
-        console.log("-----------------------");
-      }
+      console.log("Album: " + songData.album.name);
+      console.log("-----------------------");
     } else {
       console.log('Error occurred.');
     }
