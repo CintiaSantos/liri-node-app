@@ -1,90 +1,92 @@
 require("dotenv").config();
-
+var Spotify = require('node-spotify-api');
+var Twitter = require('twitter');
+var fs = require('fs');
+var keys = require('./keys');
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 var request = require('request');
-var keys = require('./keys');
-var twitterKeys = keys.twitterKeys;
+
+// var twitterKeys = keys.twitterKeys;
 
 var commandArg = process.argv;
 
 var liriCmd = commandArg[2];
 
 var liriArg = '';
-for (var i = 2; i < commandArg.lenght; i++) {
+
+for (var i = 2; i < commandArg.length; i++) {
   liriArg += commandArg[i] + ' ';
 };
 
-switch(action){
+switch (liriCmd) {
   case 'my-tweets':
-      getTweets();
-  break;
-};
-switch(action){
+    getTweets();
+    break;
   case 'spotify-this-song':
-      chooseSong();
-  break;
-};
-switch(action){
+    spotifySong();
+    break;
   case 'movie-this':
-      chooseMovie();
-  break;
-};
-switch(action){
+    chooseMovie();
+    break;
   case 'do-what-it-says':
-      DoWhatItSays();
-  break;
+    DoWhatItSays();
+    break;
 };
 
-    function getTweets() {
+function getTweets() {
 
-      var client = new Twitter({
-        consumer_key: keys.twitterKeys.consumer_key,
-        consumer_secret: keys.twitterKeys.consumer_secret,
-        access_token_key: keys.twitterKeys.access_token_key,
-        access_token_secret: keys.twitterKeys.access_token_secret
-      });
+  // var client = new Twitter({
+  //   consumer_key: keys.twitterKeys.consumer_key,
+  //   consumer_secret: keys.twitterKeys.consumer_secret,
+  //   access_token_key: keys.twitterKeys.access_token_key,
+  //   access_token_secret: keys.twitterKeys.access_token_secret
+  // });
 
-      var params = {
-        screen_name: "Cintia_Santos"
-      };
+  var params = {
+    screen_name: "@CintiaS48722268"
+  };
 
-      client.get('statuses/user_timeline', params, function (error, tweets, response) {
-        for (var i = 0; i < tweets.length; i++) {
-          if (!error) {
-            console.log(tweets[i].text);
-            console.log(tweets[i].created_at);
-          }
-        }
-      });
-  
-function spotifySong(song){
-  spotify.search({ type: 'track', query: song}, function(error, data){
-    if(!error){
-      for(var i = 0; i < data.tracks.items.length; i++){
+  client.get('statuses/user_timeline', function (error, tweets, response) {
+    for (var i = 0; i < tweets.length; i++) {
+      if (!error) {
+        console.log(tweets[i].text);
+        console.log(tweets[i].created_at);
+      }
+    }
+  });
+}
+
+function spotifySong(song) {
+  spotify.search({
+    type: 'track',
+    query: song
+  }, function (error, data) {
+    if (!error) {
+      for (var i = 0; i < data.tracks.items.length; i++) {
         var songData = data.tracks.items[i];
-  
+
         console.log("Artist: " + songData.artists[0].name);
-        
+
         console.log("Song: " + songData.name);
 
         console.log("Preview URL: " + songData.preview_url);
-  
+
         console.log("Album: " + songData.album.name);
-        console.log("-----------------------"); }
-        }
-    else{
-        console.log('Error occurred.');
+        console.log("-----------------------");
       }
-    });
-  }
+    } else {
+      console.log('Error occurred.');
+    }
+  });
 }
 
-function omdbData(movie){
-  var omdbURL = 'http://www.omdbapi.com/?t=' + movie + '&plot=short&tomatoes=true';
 
-  request(omdbURL, function (error, response, body){
-    if(!error && response.statusCode == 200){
+function chooseMovie(movie) {
+  var omdbURL = 'http://www.omdbapi.com/?t=' + movie + '&y=plot=short&apikey=trilogy';
+
+  request(omdbURL, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
       var body = JSON.parse(body);
 
       console.log("Title: " + body.Title);
@@ -97,10 +99,10 @@ function omdbData(movie){
       console.log("Rotten Tomatoes Rating: " + body.tomatoRating);
       console.log("Rotten Tomatoes URL: " + body.tomatoURL);
 
-    } else{
+    } else {
       console.log('Error occurred.')
     }
-    if(movie === "Mr. Nobody"){
+    if (movie === "Mr. Nobody") {
       console.log("-----------------------");
       console.log("If you haven't watched 'Mr. Nobody,' then you should: http://www.imdb.com/title/tt0485947/");
       console.log("It's on Netflix!");
